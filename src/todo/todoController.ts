@@ -7,44 +7,46 @@ import {
   UsePipes,
 } from '@nestjs/common/decorators';
 import { searchTodoDTO } from './DTOs/SearchTodoDTO';
-//import { TodoService } from './todoService';
+import { TodoService } from './todoService';
 import { TodoServiceV2 } from './todoService';
 import { TodoAddDTO } from './DTOs/TodoAddDTO';
 import { TodoUpdateDTO } from './DTOs/TodoUpdateDTO';
 
-//Old version
-// @Controller({ path: 'todo', version: '1' })
-// export class TodoController {
-//   constructor(private todoService: TodoService) {}
-//   @Get()
-//   getTodos() {
-//     return this.todoService.findAll();
-//   }
-//
-//   @Post('/add')
-//   @UsePipes(ValidationPipe)
-//   addTodo(@Body() addData: TodoAddDTO) {
-//     this.todoService.add(addData);
-//     return this.todoService.findAll();
-//   }
-//
-//   @Get('/:id')
-//   getTodoById(@Param() params) {
-//     return this.todoService.findById(params.id);
-//   }
-//
-//   @Delete('/:id')
-//   deleteTodoById(@Param() params) {
-//     return this.todoService.deleteById(params.id);
-//   }
-//
-//   @Post('/:id')
-//   editTodoById(@Param() params, @Body() updateData: TodoUpdateDTO) {
-//     return this.todoService.updateTodoByIndex(params.id, updateData);
-//   }
-// }
+@Controller({ path: 'todo', version: '1' })
+export class TodoController {
+  constructor(private todoService: TodoService) {}
+  @Get()
+  getTodos() {
+    return this.todoService.findAll();
+  }
 
-@Controller({ version: '2', path: 'todo' })
+  @Post('/add')
+  @UsePipes(ValidationPipe)
+  addTodo(@Body() addData: TodoAddDTO) {
+    this.todoService.add(addData);
+    return this.todoService.findAll();
+  }
+  @Get('')
+  getPaginated(@Query('page') page = 1, @Query('limit') limit = 2) {
+    return this.todoService.getAllTodosPaginated(page, limit);
+  }
+  @Get('/:id')
+  getTodoById(@Param() params) {
+    return this.todoService.findById(params.id);
+  }
+
+  @Delete('/:id')
+  deleteTodoById(@Param() params) {
+    return this.todoService.deleteById(params.id);
+  }
+
+  @Post('/:id')
+  editTodoById(@Param() params, @Body() updateData: TodoUpdateDTO) {
+    return this.todoService.updateTodoByIndex(params.id, updateData);
+  }
+}
+
+@Controller({ path: 'todo', version: '2' })
 export class TodoControllerV2 {
   constructor(private todoService: TodoServiceV2) {}
 
